@@ -14,7 +14,7 @@ public class FilmController {
         this.filmService = filmService;
     }
 
-    @PostMapping("/films/film")
+    @PostMapping("/films")
     public Film addFilm(@RequestBody Film film) {
         filmService.addFilm(film);
         return filmService.getFilm(film.getId());

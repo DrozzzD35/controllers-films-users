@@ -2,7 +2,7 @@ package filmorate.service;
 
 import filmorate.exception.ValidationException;
 import filmorate.model.Film;
-import filmorate.model.User;
+import filmorate.utils.Identity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +20,20 @@ public class FilmService {
     public Film addFilm(Film film) {
         if (!validationFilm(film)) {
             log.error("Ошибка валидации при добавлении фильма {}", film.getName());
-            throw new ValidationException("Данные фильма не соответствуют требования");
+            throw new ValidationException();
         }
-        log.info("Фильм сохранён, id = {}", film.getId());
+        film.setId(Identity.INSTANCE.generatedIdFilm());
         filmCollection.put(film.getId(), film);
+        log.info("Фильм сохранён, id = {}", film.getId());
         return getFilm(film.getId());
     }
 
     public Film updateFilm(Film newFilm) {
-        if (filmCollection.containsKey(newFilm.getId())) {
+        if (!filmCollection.containsKey(newFilm.getId())) {
+            log.error("Фильм не найден");
+            throw new ValidationException();
+        }
+        if (!validationFilm(newFilm)) {
             log.error("Ошибка валидации при обновлении фильма {}", newFilm.getName());
             throw new RuntimeException("Фильм не найден");
         }

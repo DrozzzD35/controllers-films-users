@@ -20,18 +20,22 @@ public class UserService {
     public User addUser(User user) {
         if (!validationUser(user)) {
             log.error("Ошибка валидации при добавлении пользователя {}", user.getName());
-            throw new ValidationException("Данные пользователя не соответствуют требования");
+            throw new ValidationException();
         }
-        log.info("Пользователь сохранён, id = {}", user.getId());
         user.setId(Identity.INSTANCE.generatedIdUser());
         userCollection.put(user.getId(), user);
+        log.info("Пользователь сохранён, id = {}", user.getId());
         return getUser(user.getId());
     }
 
     public User updateUser(User newUser) {
         if (!userCollection.containsKey(newUser.getId())) {
+            log.error("Пользователь не найден");
+            throw new ValidationException();
+        }
+        if (!validationUser(newUser)) {
             log.error("Ошибка валидации при обновлении пользователя {}", newUser.getName());
-            throw new RuntimeException("Пользователь не найден");
+            throw new ValidationException();
         }
         log.info("Пользователь обновлён, id = {}", newUser.getId());
         userCollection.put(newUser.getId(), newUser);
