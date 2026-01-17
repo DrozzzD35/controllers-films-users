@@ -2,6 +2,7 @@ package filmorate.controller;
 
 import filmorate.model.User;
 import filmorate.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,13 +16,13 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public User addUser(@RequestBody User user) {
+    public User addUser(@Valid @RequestBody User user) {
         userService.addUser(user);
         return userService.getUser(user.getId());
     }
 
     @PutMapping("/users/user")
-    public User updateUser(@RequestBody User user) {
+    public User updateUser(@Valid @RequestBody User user) {
         userService.updateUser(user);
         return userService.getUser(user.getId());
     }

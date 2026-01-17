@@ -2,6 +2,7 @@ package filmorate.controller;
 
 import filmorate.model.Film;
 import filmorate.service.FilmService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,13 +16,13 @@ public class FilmController {
     }
 
     @PostMapping("/films")
-    public Film addFilm(@RequestBody Film film) {
+    public Film addFilm(@Valid @RequestBody Film film) {
         filmService.addFilm(film);
         return filmService.getFilm(film.getId());
     }
 
     @PutMapping("/films/film")
-    public Film updateFilm(@RequestBody Film newFilm) {
+    public Film updateFilm(@Valid @RequestBody Film newFilm) {
         filmService.updateFilm(newFilm);
         return filmService.getFilm(newFilm.getId());
     }
