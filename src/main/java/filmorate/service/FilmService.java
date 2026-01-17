@@ -54,7 +54,8 @@ public class FilmService {
         LocalDate filmBirthday = LocalDate.of(1895, 12, 28);
 
         if (film == null) return false;
-//        if (film.getName() == null || film.getName().isBlank() || film.getName().contains(" ")) return false;
+//        if (film.getName() == null || film.getName().isBlank()) return false;
+        if (film.getName().contains(" ")) return false;
         if (film.getDescription() == null || film.getDescription().length() > 200) return false;
         if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(filmBirthday)
                 || film.getReleaseDate().isAfter(LocalDate.now())) return false;

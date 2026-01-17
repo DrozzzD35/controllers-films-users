@@ -14,8 +14,14 @@ public class Film {
     @NotNull
     @NotBlank
     private String name;
+
+    @NotNull
     private String description;
+
+    @NotNull
     private LocalDate releaseDate;
+
+    @NotNull
     private Duration duration;
 
 
