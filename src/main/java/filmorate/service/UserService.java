@@ -52,9 +52,9 @@ public class UserService {
 
     private boolean validationUser(User user) {
         if (user == null) return false;
-        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) return false;
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) return false;
-        if (user.getName() == null || user.getName().contains(" ")) return false;
+//        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) return false;
+//        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) return false;
+//        if (user.getName() == null || user.getName().contains(" ")) return false;
         if (user.getName().isBlank()) user.setName(user.getLogin());
 
         return user.getBirthday() != null && !user.getBirthday().isAfter(LocalDate.now());
