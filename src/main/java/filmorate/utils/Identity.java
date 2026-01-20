@@ -1,23 +1,18 @@
 package filmorate.utils;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public enum Identity {
     INSTANCE;
-    private int IdentityFilm = 1;
-    private int IdentityUser = 1;
+    private final AtomicInteger identityFilm = new AtomicInteger(1);
+    private final AtomicInteger identityUser = new AtomicInteger(1);
 
     public int generatedIdFilm() {
-        return IdentityFilm++;
+        return identityFilm.getAndIncrement();
     }
 
     public int generatedIdUser() {
-        return IdentityUser++;
+        return identityUser.getAndIncrement();
     }
 
-    public void setIdentityFilm(int identityFilm) {
-        IdentityFilm = identityFilm;
-    }
-
-    public void setIdentityUser(int identityUser) {
-        IdentityUser = identityUser;
-    }
 }
