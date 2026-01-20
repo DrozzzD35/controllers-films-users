@@ -11,19 +11,17 @@ import java.time.LocalDate;
 public class User {
     private int id;
 
-    @NotNull
-    @Email
+    @NotNull(message = "почта не может отсутствовать")
+    @Email(message = "некорректный формат почты")
     private String email;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "логин не может быть пустым")
+    @NotBlank(message = "логин не может быть пустым")
     private String login;
 
-    @NotNull
-    @NotBlank
     private String name;
 
-    @NotNull
+    @NotNull(message = "день рождения не может отсутствовать")
     private LocalDate birthday;
 
 }
