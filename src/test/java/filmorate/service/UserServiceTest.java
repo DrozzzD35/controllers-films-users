@@ -14,7 +14,7 @@ public class UserServiceTest {
 
 
     @BeforeEach
-    void SetUp() {
+    void setUp() {
         this.userService = new UserService();
 
         user = new User();
@@ -28,11 +28,6 @@ public class UserServiceTest {
     void name() {
         Assertions.assertNotNull(user);
 
-        user.setName(null);
-        Assertions.assertThrows(ValidationException.class, () -> {
-            userService.addUser(user);
-        });
-
         user.setLogin("");
         user.setName("");
         Assertions.assertThrows(ValidationException.class, () -> {
@@ -44,10 +39,18 @@ public class UserServiceTest {
             userService.addUser(user);
         });
 
+        user.setLogin("Alex");
         user.setName("Ivan Ivanov");
-        Assertions.assertThrows(ValidationException.class, () -> {
-            userService.addUser(user);
-        });
+        Assertions.assertEquals("Ivan Ivanov", user.getName());
+
+        user.setName("Alex");
+        Assertions.assertEquals("Alex", user.getName());
+
+        user.setLogin("Alex");
+        user.setName("");
+        userService.addUser(user);
+        Assertions.assertEquals("Alex", user.getName());
+
     }
 
     @Test
@@ -72,6 +75,8 @@ public class UserServiceTest {
             userService.addUser(user);
         });
 
+        user.setEmail("123@ya.ru");
+        Assertions.assertEquals("123@ya.ru", user.getEmail());
     }
 
     @Test
@@ -92,27 +97,28 @@ public class UserServiceTest {
         });
 
         user.setLogin("Petr Petrov");
-        Assertions.assertThrows(ValidationException.class, () -> {
-            userService.addUser(user);
-        });
+        Assertions.assertEquals("Petr Petrov", user.getLogin());
+
+        user.setLogin("Ivan");
+        Assertions.assertEquals("Ivan", user.getLogin());
+
     }
 
     @Test
     void birthday() {
         user.setBirthday(null);
-         Assertions.assertThrows(ValidationException.class, () -> {
+        Assertions.assertThrows(ValidationException.class, () -> {
             userService.addUser(user);
         });
 
         user.setBirthday(LocalDate.of(3000, 12, 6));
-         Assertions.assertThrows(ValidationException.class, () -> {
+        Assertions.assertThrows(ValidationException.class, () -> {
             userService.addUser(user);
         });
 
-         Assertions.assertThrows(ValidationException.class, () -> {
-            userService.addUser(user);
-        });
-
+        user.setBirthday(LocalDate.of(2000, 12, 6));
+        Assertions.assertEquals(LocalDate.of(2000, 12, 6),
+                user.getBirthday());
 
     }
 

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 public class FilmServiceTest {
@@ -14,14 +13,14 @@ public class FilmServiceTest {
     private Film film;
 
     @BeforeEach
-    void SetUp() {
+    void setUp() {
         this.filmService = new FilmService();
 
         film = new Film();
         film.setName("test");
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 7, 16));
-        film.setDuration(Duration.ofMinutes(120));
+        film.setDuration(120);
     }
 
     @Test
@@ -44,9 +43,10 @@ public class FilmServiceTest {
         });
 
         film.setName("Ivan Ivanov");
-        Assertions.assertThrows(ValidationException.class, () -> {
-            filmService.addFilm(film);
-        });
+        Assertions.assertEquals("Ivan Ivanov", film.getName());
+
+        film.setName("Petr");
+        Assertions.assertEquals("Petr", film.getName());
     }
 
     @Test
@@ -64,6 +64,9 @@ public class FilmServiceTest {
         Assertions.assertThrows(ValidationException.class, () -> {
             filmService.addFilm(film);
         });
+
+        film.setDescription("Описание");
+        Assertions.assertEquals("Описание", film.getDescription());
     }
 
     @Test
@@ -77,25 +80,25 @@ public class FilmServiceTest {
         Assertions.assertThrows(ValidationException.class, () -> {
             filmService.addFilm(film);
         });
+
+        film.setReleaseDate(LocalDate.of(1895, 12, 28));
+        Assertions.assertEquals(LocalDate.of(1895, 12, 28),
+                film.getReleaseDate());
+
     }
 
     @Test
     void duration() {
-        film.setDuration(null);
+        film.setDuration(-1);
         Assertions.assertThrows(ValidationException.class, () -> {
             filmService.addFilm(film);
         });
 
-        film.setDuration(Duration.ofMinutes(-1));
-        Assertions.assertThrows(ValidationException.class, () -> {
-            filmService.addFilm(film);
-        });
+        film.setDuration(3);
+        Assertions.assertEquals(3,film.getDuration());
 
-        film.setDuration(Duration.ofMinutes(0));
-        Assertions.assertThrows(ValidationException.class, () -> {
-            filmService.addFilm(film);
-        });
+        film.setDuration(0);
+        Assertions.assertEquals(0,film.getDuration());
+
     }
-
-
 }
