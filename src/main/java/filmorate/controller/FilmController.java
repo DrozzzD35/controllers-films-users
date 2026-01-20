@@ -17,14 +17,12 @@ public class FilmController {
 
     @PostMapping("/films")
     public Film addFilm(@Valid @RequestBody Film film) {
-        filmService.addFilm(film);
-        return filmService.getFilm(film.getId());
+        return filmService.addFilm(film);
     }
 
-    @PutMapping("/films/film")
+    @PutMapping("/films")
     public Film updateFilm(@Valid @RequestBody Film newFilm) {
-        filmService.updateFilm(newFilm);
-        return filmService.getFilm(newFilm.getId());
+        return filmService.updateFilm(newFilm);
     }
 
     @GetMapping("/films")

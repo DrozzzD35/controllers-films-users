@@ -17,14 +17,12 @@ public class UserController {
 
     @PostMapping("/users")
     public User addUser(@Valid @RequestBody User user) {
-        userService.addUser(user);
-        return userService.getUser(user.getId());
+        return userService.addUser(user);
     }
 
-    @PutMapping("/users/user")
+    @PutMapping("/users")
     public User updateUser(@Valid @RequestBody User user) {
-        userService.updateUser(user);
-        return userService.getUser(user.getId());
+        return userService.updateUser(user);
     }
 
     @GetMapping("/users")
