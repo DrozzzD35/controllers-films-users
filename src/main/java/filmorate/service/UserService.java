@@ -1,5 +1,6 @@
 package filmorate.service;
 
+import filmorate.exception.NotFoundException;
 import filmorate.exception.ValidationException;
 import filmorate.model.User;
 import filmorate.utils.Identity;
@@ -18,10 +19,7 @@ public class UserService {
     private final Map<Integer, User> userCollection = new HashMap<>();
 
     public User addUser(User user) {
-        if (!validationUser(user)) {
-            log.error("Ошибка валидации при добавлении пользователя {}", user.getName());
-            throw new ValidationException();
-        }
+        validationUser(user);
         user.setId(Identity.INSTANCE.generatedIdUser());
         userCollection.put(user.getId(), user);
         log.info("Пользователь сохранён, id = {}", user.getId());
@@ -30,13 +28,9 @@ public class UserService {
 
     public User updateUser(User newUser) {
         if (!userCollection.containsKey(newUser.getId())) {
-            log.error("Пользователь не найден");
-            throw new ValidationException();
+            throw new NotFoundException("Пользователь не найден");
         }
-        if (!validationUser(newUser)) {
-            log.error("Ошибка валидации при обновлении пользователя {}", newUser.getName());
-            throw new ValidationException();
-        }
+        validationUser(newUser);
         log.info("Пользователь обновлён, id = {}", newUser.getId());
         userCollection.put(newUser.getId(), newUser);
         return getUser(newUser.getId());
@@ -50,13 +44,21 @@ public class UserService {
         return userCollection.get(id);
     }
 
-    private boolean validationUser(User user) {
-        if (user == null) return false;
-        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) return false;
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) return false;
-        if (user.getName() == null || user.getName().contains(" ")) return false;
-        if (user.getName().isBlank()) user.setName(user.getLogin());
-
-        return user.getBirthday() != null && !user.getBirthday().isAfter(LocalDate.now());
+    private void validationUser(User user) {
+        if (user == null) {
+            throw new ValidationException("Необходим пользователь");
+        }
+        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+            throw new ValidationException("Ошибка написания почты");
+        }
+        if (user.getLogin() == null || user.getLogin().isBlank()) {
+            throw new ValidationException("Ошибка написания логина");
+        }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+        if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())) {
+            throw new ValidationException("Ошибка даты рождения пользователя");
+        }
     }
 }
