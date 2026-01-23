@@ -3,6 +3,7 @@ package filmorate.service;
 import filmorate.exception.NotFoundException;
 import filmorate.exception.ValidationException;
 import filmorate.model.Film;
+import filmorate.storage.FilmStorage;
 import filmorate.utils.Identity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,33 +17,40 @@ import java.util.Map;
 @Service
 @Slf4j
 public class FilmService {
-    private final Map<Integer, Film> filmCollection = new HashMap<>();
+    private final FilmStorage filmCollection;
+
+    public FilmService(FilmStorage filmCollection) {
+        this.filmCollection = filmCollection;
+    }
 
     public Film addFilm(Film film) {
         validationFilm(film);
+        filmCollection.addFilm(film);
         film.setId(Identity.INSTANCE.generatedIdFilm());
-        filmCollection.put(film.getId(), film);
         log.info("Фильм сохранён, id = {}", film.getId());
         return getFilm(film.getId());
     }
 
     public Film updateFilm(Film newFilm) {
-        if (!filmCollection.containsKey(newFilm.getId())) {
-            throw new NotFoundException("Фильм не найден");
-        }
         validationFilm(newFilm);
-
+        filmCollection.updateFilm(newFilm);
         log.info("Фильм обновлён, id = {}", newFilm.getId());
-        filmCollection.put(newFilm.getId(), newFilm);
         return getFilm(newFilm.getId());
     }
 
     public List<Film> getFilms() {
-        return new ArrayList<>(filmCollection.values());
+        log.info("Получена коллекция фильмов");
+        return filmCollection.getFilms();
     }
 
     public Film getFilm(int id) {
-        return filmCollection.get(id);
+        log.info("Получен фильм, id: {}", id);
+        return filmCollection.getFilm(id);
+    }
+
+    public void removeFilm(int id) {
+        filmCollection.removeFilm(id);
+        log.info("Фильм удалён, id фильма: {}", id);
     }
 
     private void validationFilm(Film film) {

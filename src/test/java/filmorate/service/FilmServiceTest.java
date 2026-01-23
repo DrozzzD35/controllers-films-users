@@ -14,7 +14,7 @@ public class FilmServiceTest {
 
     @BeforeEach
     void setUp() {
-        this.filmService = new FilmService();
+//        this.filmService = new FilmService();
 
         film = new Film();
         film.setName("test");

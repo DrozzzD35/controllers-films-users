@@ -3,6 +3,7 @@ package filmorate.service;
 import filmorate.exception.NotFoundException;
 import filmorate.exception.ValidationException;
 import filmorate.model.User;
+import filmorate.storage.UserStorage;
 import filmorate.utils.Identity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,32 +17,38 @@ import java.util.Map;
 @Service
 @Slf4j
 public class UserService {
-    private final Map<Integer, User> userCollection = new HashMap<>();
+    private final UserStorage userCollection;
+
+    public UserService(UserStorage userCollection) {
+        this.userCollection = userCollection;
+    }
 
     public User addUser(User user) {
         validationUser(user);
+        userCollection.addUser(user);
         user.setId(Identity.INSTANCE.generatedIdUser());
-        userCollection.put(user.getId(), user);
         log.info("Пользователь сохранён, id = {}", user.getId());
         return getUser(user.getId());
     }
 
     public User updateUser(User newUser) {
-        if (!userCollection.containsKey(newUser.getId())) {
-            throw new NotFoundException("Пользователь не найден");
-        }
         validationUser(newUser);
+        userCollection.updateUser(newUser);
         log.info("Пользователь обновлён, id = {}", newUser.getId());
-        userCollection.put(newUser.getId(), newUser);
         return getUser(newUser.getId());
     }
 
-    public List<User> getUsers() {
-        return new ArrayList<>(userCollection.values());
+    public User getUser(int id) {
+        return userCollection.getUser(id);
     }
 
-    public User getUser(int id) {
-        return userCollection.get(id);
+    public List<User> getUsers() {
+        return userCollection.getUsers();
+    }
+
+    public void removeUser(int id){
+        userCollection.removeUser(id);
+        log.info("Пользователь удалён, id пользователя = {}", id);
     }
 
     private void validationUser(User user) {

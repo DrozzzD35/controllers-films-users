@@ -15,7 +15,7 @@ public class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        this.userService = new UserService();
+//        this.userService = new UserService();
 
         user = new User();
         user.setEmail("123@g.ru");
