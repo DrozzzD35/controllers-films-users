@@ -20,25 +20,16 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public void removeFilm(int id) {
-        if (!filmCollection.containsKey(id)) {
-            System.out.println("Фильм с таким идентификатором не найден");
-        }
         filmCollection.remove(id);
     }
 
     @Override
     public void updateFilm(Film film) {
-        if (!filmCollection.containsKey(film.getId())) {
-            throw new NotFoundException("Фильм с таким идентификатором не найден");
-        }
         filmCollection.put(film.getId(), film);
     }
 
     @Override
     public Film getFilm(int id) {
-        if (!filmCollection.containsKey(id)) {
-            System.out.println("Фильм с таким идентификатором не найден");
-        }
         return filmCollection.get(id);
     }
 

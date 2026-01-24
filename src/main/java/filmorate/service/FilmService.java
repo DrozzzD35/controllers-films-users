@@ -35,6 +35,8 @@ public class FilmService {
 
     public Film updateFilm(Film newFilm) {
         validationFilm(newFilm);
+        Film filmInCollection = getFilm(newFilm.getId());
+        newFilm.getLikes().addAll(filmInCollection.getLikes());
         filmCollection.updateFilm(newFilm);
         log.info("Фильм обновлён, id = {}", newFilm.getId());
         return getFilm(newFilm.getId());
@@ -66,8 +68,9 @@ public class FilmService {
     }
 
     public void removeFilm(int id) {
-        filmCollection.removeFilm(id);
-        log.info("Фильм удалён, id фильма: {}", id);
+        Film film = getFilm(id);
+        filmCollection.removeFilm(film.getId());
+        log.info("Фильм удалён с id - {}", id);
     }
 
     public void addLike(int filmId, int userId) {

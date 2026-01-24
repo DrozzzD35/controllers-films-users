@@ -30,6 +30,8 @@ public class UserService {
 
     public User updateUser(User newUser) {
         validationUser(newUser);
+        User userInCollection = getUser(newUser.getId());
+        newUser.getFriends().addAll(userInCollection.getFriends());
         userCollection.updateUser(newUser);
         log.info("Пользователь с id - {} обновлён", newUser.getId());
         return getUser(newUser.getId());
@@ -50,16 +52,18 @@ public class UserService {
     }
 
     public void removeUser(int id) {
-        userCollection.removeUser(id);
+        User user = getUser(id);
+        userCollection.removeUser(user.getId());
         log.info("Пользователь id - {} удалён", id);
     }
 
     public void addFriend(int userId, int friendId) {
+        validateId(userId, friendId);
         User user = getUser(userId);
-        User friend = getUser(userId);
+        User friend = getUser(friendId);
         user.getFriends().add(friend.getId());
         friend.getFriends().add(user.getId());
-        log.info("Пользователи с id {}  {} стали друзьями", userId, friendId);
+        log.info("Пользователи с id - {}, id - {} стали друзьями", userId, friendId);
     }
 
     public List<User> getFriends(int userId) {
@@ -76,14 +80,16 @@ public class UserService {
     }
 
     public void removeFriend(int userId, int friendId) {
+        validateId(userId, friendId);
         User user = getUser(userId);
-        User friend = getUser(userId);
+        User friend = getUser(friendId);
         user.getFriends().remove(friend.getId());
         friend.getFriends().remove(user.getId());
         log.info("Пользователи с id - {}, id - {} удалены друг у друга из друзей", userId, friendId);
     }
 
     public List<User> getCommonFriends(int userId, int otherId) {
+        validateId(userId, otherId);
         User user = getUser(userId);
         User otherUser = getUser(otherId);
         List<User> commonFriends = new ArrayList<>();
@@ -95,6 +101,12 @@ public class UserService {
         }
         log.info("Список общих друзей пользователей с id - {}, id - {}", user.getId(), otherUser.getId());
         return commonFriends;
+    }
+
+    private void validateId(int userId, int otherId) {
+        if (userId == otherId) {
+            throw new ValidationException("Некорректные данные");
+        }
     }
 
     private void validationUser(User user) {

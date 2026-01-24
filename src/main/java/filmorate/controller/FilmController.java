@@ -3,6 +3,7 @@ package filmorate.controller;
 import filmorate.model.Film;
 import filmorate.service.FilmService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +17,15 @@ public class FilmController {
     }
 
     @PostMapping("/films")
+    @ResponseStatus(HttpStatus.CREATED)
     public Film addFilm(@Valid @RequestBody Film film) {
         return filmService.addFilm(film);
+    }
+
+    @DeleteMapping("films/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeFilm(@PathVariable int id){
+        filmService.removeFilm(id);
     }
 
     @PutMapping("/films")
@@ -36,6 +44,7 @@ public class FilmController {
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeLike(@PathVariable("id") int filmId, @PathVariable int userId) {
         filmService.removeLike(filmId, userId);
     }
