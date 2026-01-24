@@ -40,8 +40,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleNotValid(final MethodArgumentNotValidException e) {
-        log.error("Недостаточно данных: {}", e.getMessage());
-        return Map.of("error", "Недостаточно данных");
+        String massage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        log.error("Некорректные данные: {}", e.getMessage());
+        return Map.of("error", massage);
     }
 
     @ExceptionHandler
