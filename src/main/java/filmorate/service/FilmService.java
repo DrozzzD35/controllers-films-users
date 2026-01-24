@@ -60,7 +60,7 @@ public class FilmService {
     public User getUser(int id) {
         User user = userCollection.getUser(id);
         if (user == null) {
-            log.info("Пользователь с id {} не найден", id);
+            log.error("Пользователь с id {} не найден", id);
             throw new NotFoundException("Пользователь с id " + id + " не найден");
         }
 //        log.info("Получен пользователь с id {}", id);
