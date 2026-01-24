@@ -22,9 +22,14 @@ public class FilmController {
         return filmService.addFilm(film);
     }
 
+    @GetMapping("/films/{id}")
+    public Film getFilm(@PathVariable int id) {
+        return filmService.getFilm(id);
+    }
+
     @DeleteMapping("films/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeFilm(@PathVariable int id){
+    public void removeFilm(@PathVariable int id) {
         filmService.removeFilm(id);
     }
 
