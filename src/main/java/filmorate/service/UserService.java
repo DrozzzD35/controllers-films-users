@@ -22,8 +22,8 @@ public class UserService {
 
     public User addUser(User user) {
         validationUser(user);
-        userCollection.addUser(user);
         user.setId(Identity.INSTANCE.generatedIdUser());
+        userCollection.addUser(user);
         log.info("Пользователь сохранён, id = {}", user.getId());
         return getUser(user.getId());
     }
@@ -31,17 +31,17 @@ public class UserService {
     public User updateUser(User newUser) {
         validationUser(newUser);
         userCollection.updateUser(newUser);
-        log.info("Пользователь обновлён, id = {}", newUser.getId());
+        log.info("Пользователь с id - {} обновлён", newUser.getId());
         return getUser(newUser.getId());
     }
 
     public User getUser(int id) {
         User user = userCollection.getUser(id);
         if (user == null) {
-            log.info("Пользователь с id {} не найден", id);
-            throw new NotFoundException("Пользователь с id " + id + " не найден");
+            log.info("Пользователь с id - {} не найден", id);
+            throw new NotFoundException("Пользователь с id - " + id + " не найден");
         }
-        log.info("Получен пользователь, id: {}", id);
+//        log.info("Получен пользователь с id - {}", id);
         return user;
     }
 
@@ -51,41 +51,53 @@ public class UserService {
 
     public void removeUser(int id) {
         userCollection.removeUser(id);
-        log.info("Пользователь удалён, id пользователя = {}", id);
+        log.info("Пользователь id - {} удалён", id);
     }
 
     public void addFriend(int userId, int friendId) {
         User user = getUser(userId);
         User friend = getUser(userId);
-        user.getFriend().add(friend.getId());
-        friend.getFriend().add(user.getId());
+        user.getFriends().add(friend.getId());
+        friend.getFriends().add(user.getId());
         log.info("Пользователи с id {}  {} стали друзьями", userId, friendId);
     }
 
     public List<User> getFriends(int userId) {
         User user = getUser(userId);
-        Set<Integer> friendIds = user.getFriend();
+        Set<Integer> friendIds = user.getFriends();
         List<User> friends = new ArrayList<>();
 
         for (int id : friendIds) {
             User userFriend = getUser(id);
             friends.add(userFriend);
         }
+        log.info("Список друзей пользователя id - {}", user.getId());
         return friends;
     }
 
     public void removeFriend(int userId, int friendId) {
         User user = getUser(userId);
         User friend = getUser(userId);
-        user.getFriend().remove(friend.getId());
-        friend.getFriend().remove(user.getId());
-        log.info("Пользователи с id {}  {} не друзья", userId, friendId);
+        user.getFriends().remove(friend.getId());
+        friend.getFriends().remove(user.getId());
+        log.info("Пользователи с id - {}, id - {} удалены друг у друга из друзей", userId, friendId);
+    }
+
+    public List<User> getCommonFriends(int userId, int otherId) {
+        User user = getUser(userId);
+        User otherUser = getUser(otherId);
+        List<User> commonFriends = new ArrayList<>();
+
+        for (int friendIdByUser : user.getFriends()) {
+            if (otherUser.getFriends().contains(friendIdByUser)) {
+                commonFriends.add(getUser(friendIdByUser));
+            }
+        }
+        log.info("Список общих друзей пользователей с id - {}, id - {}", user.getId(), otherUser.getId());
+        return commonFriends;
     }
 
     private void validationUser(User user) {
-        if (user == null) {
-            throw new ValidationException("Необходим пользователь");
-        }
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ValidationException("Ошибка написания почты");
         }

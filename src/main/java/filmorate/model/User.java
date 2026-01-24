@@ -26,6 +26,6 @@ public class User {
     @NotNull(message = "день рождения не может отсутствовать")
     private LocalDate birthday;
 
-    private Set<Integer> friend = new HashSet<>();
+    private Set<Integer> friends = new HashSet<>();
 
 }

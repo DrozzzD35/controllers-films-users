@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,8 +27,8 @@ public class FilmService {
 
     public Film addFilm(Film film) {
         validationFilm(film);
-        filmCollection.addFilm(film);
         film.setId(Identity.INSTANCE.generatedIdFilm());
+        filmCollection.addFilm(film);
         log.info("Фильм сохранён, id = {}", film.getId());
         return getFilm(film.getId());
     }
@@ -52,7 +51,7 @@ public class FilmService {
             log.error("Фильм с id {} не найден", id);
             throw new NotFoundException("Фильм с id " + id + " не найден");
         }
-        log.info("Получен фильм, id: {}", id);
+//        log.info("Получен фильм с id {}", id);
         return film;
     }
 
@@ -62,7 +61,7 @@ public class FilmService {
             log.info("Пользователь с id {} не найден", id);
             throw new NotFoundException("Пользователь с id " + id + " не найден");
         }
-        log.info("Получен пользователь с id {}", id);
+//        log.info("Получен пользователь с id {}", id);
         return user;
     }
 
@@ -75,27 +74,27 @@ public class FilmService {
         User user = getUser(userId);
         Film film = getFilm(filmId);
         film.getLikes().add(user.getId());
+        log.info("Фильм id - {}, понравился пользователю id - {}", film.getId(), user.getId());
     }
 
     public void removeLike(int filmId, int userId) {
         User user = getUser(userId);
         Film film = getFilm(filmId);
         film.getLikes().remove(user.getId());
+        log.info("Пользователь id - {}, пересмотрел своё мнение относительно фильма id - {},", user.getId(), film.getId());
     }
 
-    public List<Film> getPopularFilms() {
+    public List<Film> getPopularFilms(int count) {
+        log.info("Топ {} популярных фильмов", count);
         return getFilms().stream()
                 .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
-                .limit(10)
+                .limit(count)
                 .toList();
     }
 
     private void validationFilm(Film film) {
         LocalDate filmBirthday = LocalDate.of(1895, 12, 28);
 
-        if (film == null) {
-            throw new ValidationException("Фильм не обнаружен");
-        }
         if (film.getName() == null || film.getName().isBlank()) {
             throw new ValidationException("Ошибка названия фильма");
         }

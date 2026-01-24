@@ -40,16 +40,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleNotValid(final MethodArgumentNotValidException e) {
-        log.error("Не достаточно данных: {}", e.getMessage());
-        return Map.of("error", "Не достаточно данных");
+        log.error("Недостаточно данных: {}", e.getMessage());
+        return Map.of("error", "Недостаточно данных");
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public Map<String, String> handleThrowable(final Throwable e) {
-//        log.error("Ошибка: {}", e.getMessage());
-//        return Map.of("error", e.getMessage());
-//    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleThrowable(final Throwable e) {
+        log.error("Ошибка: {}", e.getMessage());
+        return Map.of("error", e.getMessage());
+    }
 
 
 }
