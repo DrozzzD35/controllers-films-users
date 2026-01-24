@@ -40,9 +40,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleNotValid(final MethodArgumentNotValidException e) {
-        String massage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.error("Некорректные данные: {}", e.getMessage());
-        return Map.of("error", massage);
+        return Map.of("error", message == null ? "Некорректные данные" : message);
     }
 
     @ExceptionHandler
