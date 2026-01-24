@@ -43,8 +43,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFilms() {
-        return List.of((Film) filmCollection.values());
+    public Map<Integer, Film> getFilms() {
+        return new HashMap<>(filmCollection);
     }
 
 }

@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -39,16 +36,50 @@ public class UserService {
     }
 
     public User getUser(int id) {
-        return userCollection.getUser(id);
+        User user = userCollection.getUser(id);
+        if (user == null) {
+            log.info("Пользователь с id {} не найден", id);
+            throw new NotFoundException("Пользователь с id " + id + " не найден");
+        }
+        log.info("Получен пользователь, id: {}", id);
+        return user;
     }
 
     public List<User> getUsers() {
-        return userCollection.getUsers();
+        return new ArrayList<>(userCollection.getUsers().values());
     }
 
-    public void removeUser(int id){
+    public void removeUser(int id) {
         userCollection.removeUser(id);
         log.info("Пользователь удалён, id пользователя = {}", id);
+    }
+
+    public void addFriend(int userId, int friendId) {
+        User user = getUser(userId);
+        User friend = getUser(userId);
+        user.getFriend().add(friend.getId());
+        friend.getFriend().add(user.getId());
+        log.info("Пользователи с id {}  {} стали друзьями", userId, friendId);
+    }
+
+    public List<User> getFriends(int userId) {
+        User user = getUser(userId);
+        Set<Integer> friendIds = user.getFriend();
+        List<User> friends = new ArrayList<>();
+
+        for (int id : friendIds) {
+            User userFriend = getUser(id);
+            friends.add(userFriend);
+        }
+        return friends;
+    }
+
+    public void removeFriend(int userId, int friendId) {
+        User user = getUser(userId);
+        User friend = getUser(userId);
+        user.getFriend().remove(friend.getId());
+        friend.getFriend().remove(user.getId());
+        log.info("Пользователи с id {}  {} не друзья", userId, friendId);
     }
 
     private void validationUser(User user) {
@@ -68,4 +99,5 @@ public class UserService {
             throw new ValidationException("Ошибка даты рождения пользователя");
         }
     }
+
 }

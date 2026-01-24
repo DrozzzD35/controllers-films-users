@@ -2,7 +2,7 @@ package filmorate.storage;
 
 import filmorate.model.User;
 
-import java.util.List;
+import java.util.Map;
 
 public interface UserStorage {
 
@@ -14,5 +14,5 @@ public interface UserStorage {
 
     User getUser(int id);
 
-    List<User> getUsers();
+    Map<Integer, User> getUsers();
 }

@@ -40,7 +40,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getUsers() {
-        return List.of((User) userCollection.values());
+    public Map<Integer, User> getUsers() {
+        return new HashMap<>(userCollection);
     }
 }

@@ -3,6 +3,7 @@ package filmorate.storage;
 import filmorate.model.Film;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FilmStorage {
 
@@ -14,7 +15,7 @@ public interface FilmStorage {
 
     Film getFilm(int id);
 
-    List<Film> getFilms();
+    Map<Integer, Film> getFilms();
 
 
 }

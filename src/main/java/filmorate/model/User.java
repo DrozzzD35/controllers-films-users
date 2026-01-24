@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -25,6 +26,6 @@ public class User {
     @NotNull(message = "день рождения не может отсутствовать")
     private LocalDate birthday;
 
-    private Set<Long> friend;
+    private Set<Integer> friend = new HashSet<>();
 
 }
